@@ -1,0 +1,49 @@
+name: Runeforge Auto Scraper
+
+on:
+  schedule:
+    # 7h sáng hàng ngày
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+    # Chạy thủ công
+
+jobs:
+  scrape-and-push:
+    runs-on: windows-latest
+    permissions:
+      contents: write 
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests beautifulsoup4
+
+      - name: Initialize Scraper Service
+        env:
+          GITHUB_WORKSPACE: ${{ github.workspace }}
+          SCRAPER_SCRIPT: ${{ secrets.SCRAPER_SCRIPT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "runeforge_auto.py" >> .gitignore
+          python -c "import os; open('runeforge_auto.py', 'w', encoding='utf-8').write(os.environ['SCRAPER_SCRIPT'])"
+          python runeforge_auto.py
+          del runeforge_auto.py
+
+      - name: Final Push to Main
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add --ignore-removal .
+          git commit -m "Auto Finalize Runeforge Scrape Session" || echo "No changes"
+          git push origin main || echo "Push finished."
