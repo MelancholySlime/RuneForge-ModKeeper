@@ -18,6 +18,11 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            .github
+            _runeforge_scraped.json
+          sparse-checkout-cone-mode: false
      
           
       - name: Setup Python
