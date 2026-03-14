@@ -8,7 +8,7 @@
 
 ![RuneForge ModKeeper Banner](https://raw.githubusercontent.com/MelancholySlime/RuneForge-ModKeeper/main/banner.png)
 
-# 🗝️ RuneForge ModKeeper
+#  RuneForge ModKeeper
 
 [![Auto Scraper](https://github.com/MelancholySlime/RuneForge-ModKeeper/actions/workflows/runeforge_scraper.yml/badge.svg)](https://github.com/MelancholySlime/RuneForge-ModKeeper/actions/workflows/runeforge_scraper.yml)
 [![Last Commit](https://img.shields.io/github/last-commit/MelancholySlime/RuneForge-ModKeeper?color=7c3aed&label=Cập%20nhật%20lần%20cuối&logo=github)](https://github.com/MelancholySlime/RuneForge-ModKeeper/commits/main)
