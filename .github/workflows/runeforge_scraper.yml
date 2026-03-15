@@ -2,8 +2,8 @@ name: Runeforge Auto Scraper
 
 on:
   schedule:
-    # 7h sáng hàng ngày
-    - cron: '0 0 * * *'
+    # 7h30 sáng hàng ngày (UTC+7 = 0h30 UTC) - lệch giờ chẵn để ít cạnh tranh runner hơn
+    - cron: '30 0 * * *'
   workflow_dispatch:
     # Chạy thủ công
 
@@ -22,6 +22,7 @@ jobs:
           sparse-checkout: |
             .github
             _runeforge_scraped.json
+            _runeforge_files.json
           sparse-checkout-cone-mode: false
      
           
@@ -38,11 +39,11 @@ jobs:
       - name: Initialize Scraper Service
         env:
           GITHUB_WORKSPACE: ${{ github.workspace }}
-          SCRAPER_SCRIPT: ${{ secrets.SCRAPER_SCRIPT }}
+          NEW_SCRAPER_SCRIPT: ${{ secrets.NEW_SCRAPER_SCRIPT }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "runeforge_auto.py" >> .gitignore
-          python -c "import os; open('runeforge_auto.py', 'w', encoding='utf-8').write(os.environ['SCRAPER_SCRIPT'])"
+          python -c "import os; open('runeforge_auto.py', 'w', encoding='utf-8').write(os.environ['NEW_SCRAPER_SCRIPT'])"
           python runeforge_auto.py
           del runeforge_auto.py
 
@@ -50,6 +51,8 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config advice.updateSparsePath false
+          git sparse-checkout add _runeforge_files.json
           git add --ignore-removal .
           git commit -m "Auto Finalize Runeforge Scrape Session" || echo "No changes"
           git push origin main || echo "Push finished."
